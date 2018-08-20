@@ -8,7 +8,7 @@ notifications:
   email: false
 
 script:
-- docker build --rm -t chrisruffalo/buildahbox:test  .
+- ./deploy
 
 deploy:
   provider: script
