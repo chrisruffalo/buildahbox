@@ -8,7 +8,7 @@ notifications:
   email: false
 
 script:
-- ./deploy
+- ./deploy.sh
 
 deploy:
   provider: script
