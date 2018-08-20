@@ -13,4 +13,4 @@ script:
 deploy:
   provider: script
   script:
-  - ./deploy.sh
+  - ./deploy.sh 1
