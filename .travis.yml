@@ -1,0 +1,18 @@
+language: go
+
+services:
+  - docker
+
+git:
+  depth: 1
+
+notifications:
+  email: false
+
+script:
+- docker build --rm -t chrisruffalo/buildahbox:test  .
+
+deploy:
+  provider: script
+  script:
+  - ./deploy.sh
