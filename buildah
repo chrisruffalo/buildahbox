@@ -10,5 +10,38 @@ CONTAINERS_DIR="${RUNTIME_DIR}/buildahbox/containers"
 # make containers dir
 [[ -d $CONTAINERS_DIR ]] || mkdir -p $CONTAINERS_DIR
 
-# execute command
-docker run -ti --privileged -v $DIR:/working -v $RUNTIME_DIR:$RUNTIME_DIR -v $CONTAINERS_DIR:$TARGET_DIR $IMAGE_TAG $@
+DOCKER_OPTIONS="run -ti --privileged -v $DIR:/working -v $RUNTIME_DIR:$RUNTIME_DIR -v $CONTAINERS_DIR:$TARGET_DIR $IMAGE_TAG"
+
+# special command handling for mount option
+if [[ $@ == "mount"* ]]; then
+	# response accumulator
+	RESPONSE=""
+
+	# count how many characters need to be removed from the front
+	read CHOP_LEN <<< $(echo $TARGET_DIR | wc -c)
+
+	# for each line of command (which may be just plain `mount` which returns each mounted container)
+	while read -r LINE; do
+		# chop the line to the first space which is after the mount hash
+		LINE=${LINE#* }
+		# remove characters that correspond to mount point on local system (poor man's substring)
+		read CHOPPED <<< $(echo $LINE | cut -c ${CHOP_LEN}-)
+		# if a response already exists from previous runs join with "\n"
+		if [[ "" != "$RESPONSE" ]]; then
+			RESPONSE="${RESPONSE}\n"
+		fi
+		# add new response (which is container_dir local to host + the chopped string from buildah) 
+		# to previous responses (which will already have a \n if needed)
+		if [[ "" != "${CHOPPED}" ]]; then
+			RESPONSE=${RESPONSE}${CONTAINERS_DIR}${CHOPPED}
+		fi
+	done <<< $(docker $DOCKER_OPTIONS $@) # feed in docker command
+	# if response has data then print with -e to feed lines, otherwise skip
+	# to keep compatibility with direct buildah command
+	if [[ "" != "${RESPONSE}" ]]; then
+		echo -e $RESPONSE
+	fi
+else
+	# execute command with no special handling
+	docker $DOCKER_OPTIONS $@
+fi
