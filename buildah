@@ -2,10 +2,10 @@
 
 # script that correctly interfaces with buildah inside the buildahbox container
 DIR=$(pwd)
-CONTAINERS_DIR="$DIR/.containers"
 TARGET_DIR="/var/lib/containers"
 IMAGE_TAG="chrisruffalo/buildahbox:latest"
 RUNTIME_DIR=${XDG_RUNTIME_DIR:-"/var/run/users/${UID}"}
+CONTAINERS_DIR="${RUNTIME_DIR}/buildahbox/containers"
 
 # make containers dir
 [[ -d $CONTAINERS_DIR ]] || mkdir -p $CONTAINERS_DIR

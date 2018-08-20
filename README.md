@@ -8,7 +8,7 @@ Buildahbox can build buildahbox but we don't use it to deploy and build with Tra
 
 ## Use
 
-The chrisruffalo/buildahbox image is published for use anywhere. The included scripts create a stand-alone environment using pre-configured options. They do **not** attempt to use `/var/lib/containers` for buildah and so will not conflict with a locally running copy. Instead the script creates a ".containers" directory local to where the script is run. The `podman` script also mounts the `XDG_RUNTIME_DIR` (typically `/run/users/<USERID>` or `/var/run/users/<USERID>`) inside the container to maintain compatibility in case you have already logged in with podman.
+The chrisruffalo/buildahbox image is published for use anywhere. The included scripts create a stand-alone environment using pre-configured options. They do **not** attempt to use `/var/lib/containers` for buildah and so will not conflict with a locally running copy. Instead the scripts use `XDG_RUNTIME_DIR` (typically `/run/users/<USERID>` or `/var/run/users/<USERID>`) for both container configuration (to share podman configuration with the local host) and a directory called `buildahbox/containers` is created in the runtime directory to store container data created by buildahbox.
 
 Sample buildah usage:
 ```bash
@@ -20,4 +20,4 @@ Sample buildah usage:
 Sample podman usage:
 ```bash
 [buildahbox]$ ./podman login docker.io --username MYSUER --password MYPASS
-``
+```
