@@ -14,6 +14,7 @@ DOCKER_OPTIONS="run -ti --privileged -v $DIR:/working -v $RUNTIME_DIR:$RUNTIME_D
 
 # special command handling for mount option
 if [[ $@ == "mount"* ]]; then
+	# use sed to replace target directory with external-reachable containers dir
 	docker $DOCKER_OPTIONS $@ | sed "s|$TARGET_DIR|$CONTAINERS_DIR|"
 else
 	# execute command with no special handling
