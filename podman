@@ -6,9 +6,10 @@ PODMAN_BIN="/usr/bin/podman"
 CONTAINERS_DIR="$DIR/.containers"
 TARGET_DIR="/var/lib/containers"
 IMAGE_TAG="chrisruffalo/buildahbox:latest"
+RUNTIME_DIR=${XDG_RUNTIME_DIR:-"/var/run/users/${UID}"}
 
 # make containers dir
 [[ -d $CONTAINERS_DIR ]] || mkdir -p $CONTAINERS_DIR
 
 # execute command
-docker run -ti --privileged --entrypoint "${PODMAN_BIN}" -v $DIR:/working -v $CONTAINERS_DIR:$TARGET_DIR $IMAGE_TAG $@
+docker run -ti --privileged --entrypoint "${PODMAN_BIN}" -v $DIR:/working -v $RUNTIME_DIR:$RUNTIME_DIR -v $CONTAINERS_DIR:$TARGET_DIR $IMAGE_TAG $@
