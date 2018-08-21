@@ -10,9 +10,9 @@ The container is hosted in the Docker Hub [here](https://hub.docker.com/r/chrisr
 
 ## Installation
 To "install" you only need to pull down the specially created scripts from this repository. You can run these from your build directory or put them on the local path. These automatically link up the necessary volumes and start with the proper permissions.
-* [buildah](/bin/buildah)
-* [podman](/bin/podman)
-* [skopeo](/bin/skopeo)
+* [buildah](bin/buildah?raw=true)
+* [podman](bin/podman?raw=true)
+* [skopeo](bin/skopeo?raw=true)
 
 You can also use the container directly if you have more advanced needs.
 
