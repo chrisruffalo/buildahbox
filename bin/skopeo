@@ -1,0 +1,18 @@
+#!/bin/bash
+
+# script that correctly interfaces with skopeo inside the buildahbox container
+DIR=$(pwd)
+SKOPEO_BIN="/usr/bin/skopeo"
+TARGET_DIR="/var/lib/containers"
+IMAGE_TAG="chrisruffalo/buildahbox:latest"
+RUNTIME_DIR=${XDG_RUNTIME_DIR:-"/var/run/user/${UID}"}
+RUNTIME_TARGET="/var/run/user/0"
+PODMAN_DIR=${RUNTIME_DIR}/containers
+PODMAN_TARGET="/var/run/containers/0"
+CONTAINERS_DIR="${HOME}/.buildahbox/containers"
+
+# make containers dir
+[[ -d $CONTAINERS_DIR ]] || mkdir -p $CONTAINERS_DIR
+
+# execute command, podman needs a tty for user input
+docker run -ti --privileged --entrypoint "${SKOPEO_BIN}" -v $DIR:/working -v $RUNTIME_DIR:$RUNTIME_TARGET -v $PODMAN_DIR:$PODMAN_TARGET -v $CONTAINERS_DIR:$TARGET_DIR $IMAGE_TAG $@
