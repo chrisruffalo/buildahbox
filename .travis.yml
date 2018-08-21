@@ -11,6 +11,8 @@ script:
 - ./build.sh
 
 deploy:
+  on:
+    branch: release
   provider: script
   script:
   - ./deploy.sh
