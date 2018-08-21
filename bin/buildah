@@ -20,7 +20,13 @@ fi
 # make containers dir
 [[ -d $CONTAINERS_DIR ]] || mkdir -p $CONTAINERS_DIR
 
-DOCKER_OPTIONS="run -i --privileged -v $DIR:/working -v $RUNTIME_DIR:$RUNTIME_TARGET -v $PODMAN_DIR:$PODMAN_TARGET -v $CONTAINERS_DIR:$TARGET_DIR $IMAGE_TAG $@"
+# enable terminal mode if needed
+USE_T=""
+if [[ $@ == "run"* ]]; then
+	USE_T="t"
+fi
+
+DOCKER_OPTIONS="run -i${USE_T} --privileged -v $DIR:/working -v $RUNTIME_DIR:$RUNTIME_TARGET -v $PODMAN_DIR:$PODMAN_TARGET -v $CONTAINERS_DIR:$TARGET_DIR $IMAGE_TAG $@"
 
 # special command handling for mount option
 if [[ $@ == "mount"* ]]; then

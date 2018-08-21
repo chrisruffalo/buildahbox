@@ -18,11 +18,16 @@ MINOR_VER="${MINOR_VER%%.*}"
 CONTAINER=$(./bin/buildah from fedora:28)
 
 # run install in container
-./bin/buildah run $CONTAINER -- yum update -y --setopt=tsflags=nodocs
-./bin/buildah run $CONTAINER -- yum install -y --setopt=tsflags=nodocs buildah podman runc skopeo
-./bin/buildah run $CONTAINER -- yum clean all
+./bin/buildah run $CONTAINER -- dnf upgrade-minimal -y --setopt=tsflags=nodocs
+./bin/buildah run $CONTAINER -- dnf install -y --setopt=tsflags=nodocs buildah podman runc skopeo
+
+# clean out dnf/yum/rpm artifacts and reduce size of rpmdb to match
+./bin/buildah run $CONTAINER -- dnf clean all
 ./bin/buildah run $CONTAINER -- rm -rf /var/cache/yum/* 
 ./bin/buildah run $CONTAINER -- rm -rf /var/lib/yum
+
+# remove logs from rpm/build process
+./bin/buildah run $CONTAINER -- rm -rf /var/log/{dnf*,anaconda/*}
 
 # set up target directory and entrypoint
 ./bin/buildah run $CONTAINER -- mkdir /working
