@@ -4,19 +4,29 @@
 DIR=$(pwd)
 TARGET_DIR="/var/lib/containers"
 IMAGE_TAG="chrisruffalo/buildahbox:latest"
-RUNTIME_DIR=${XDG_RUNTIME_DIR:-"/var/run/users/${UID}"}
-CONTAINERS_DIR="${RUNTIME_DIR}/buildahbox/containers"
+RUNTIME_DIR=${XDG_RUNTIME_DIR:-"/var/run/user/${UID}"}
+RUNTIME_TARGET="/var/run/user/0"
+PODMAN_DIR=${RUNTIME_DIR}/containers
+PODMAN_TARGET="/var/run/containers/0"
+CONTAINERS_DIR="${HOME}/.buildahbox/containers"
+
+# if the BUILDAHBOOTSTRAP env variable is set then
+# use the local buildah to build instead of the docker container
+if [[ "" != "${BUILDAHBOOTSTRAP}" ]]; then
+	buildah $@
+	exit $?
+fi
 
 # make containers dir
 [[ -d $CONTAINERS_DIR ]] || mkdir -p $CONTAINERS_DIR
 
-DOCKER_OPTIONS="run -ti --privileged -v $DIR:/working -v $RUNTIME_DIR:$RUNTIME_DIR -v $CONTAINERS_DIR:$TARGET_DIR $IMAGE_TAG"
+DOCKER_OPTIONS="run -i --privileged -v $DIR:/working -v $RUNTIME_DIR:$RUNTIME_TARGET -v $PODMAN_DIR:$PODMAN_TARGET -v $CONTAINERS_DIR:$TARGET_DIR $IMAGE_TAG $@"
 
 # special command handling for mount option
 if [[ $@ == "mount"* ]]; then
 	# use sed to replace target directory with external-reachable containers dir
-	docker $DOCKER_OPTIONS $@ | sed "s|$TARGET_DIR|$CONTAINERS_DIR|"
+	docker $DOCKER_OPTIONS | sed "s|$TARGET_DIR|$CONTAINERS_DIR|"
 else
 	# execute command with no special handling
-	docker $DOCKER_OPTIONS $@
+	docker $DOCKER_OPTIONS
 fi

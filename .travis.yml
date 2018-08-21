@@ -8,9 +8,9 @@ notifications:
   email: false
 
 script:
-- ./deploy.sh
+- ./build.sh
 
 deploy:
   provider: script
   script:
-  - ./deploy.sh 1
+  - ./deploy.sh
