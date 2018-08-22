@@ -30,7 +30,12 @@ Sample buildah usage:
 
 Sample podman usage:
 ```bash
-[buildahbox]$ ./bin/podman login docker.io --username MYSUER --password MYPASS
+[buildahbox]$ ./bin/podman login docker.io --username MYUSER --password MYPASS
+```
+
+Sample skopeo usage:
+```bash
+[buildahbox]$ ./bin/skopeo copy alpine-git:latest docker://docker.io/organization/alpine-git:latest
 ```
 
 ## Building
