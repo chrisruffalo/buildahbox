@@ -3,7 +3,7 @@
 ## Overview
 This is a containerized buildah/skopeo/runc/podman instance that allows you to use those tools somewhat transparently from a system that only supports Docker and that might not have compiled binaries for those things. With this toolkit you can keep your existing workflow on systems that only support Docker and use buildah and various other tools to support that workflow.
 
-Buildahbox is built with buildahbox using buildah, skopeo, and podman from inside the container.
+Buildahbox is built with buildahbox using buildah, skopeo, and podman from inside the container. Buildahbox also supports a (smaller) Debian output container.
 
 ## Container
 The container is hosted in the Docker Hub [here](https://hub.docker.com/r/chrisruffalo/buildahbox/).
@@ -24,20 +24,27 @@ For `podman` configuration (especially shared between runs and with local podman
 Sample buildah usage:
 ```bash
 [buildahbox]$ CONTAINER=$(./buildah from alpine)
-[buildahbox]$ ./buildah run $CONTAINER -- apk add --no-cache git
-[buildahbox]$ ./buildah commit $CONTAINER alpine-git:latest
+[buildahbox]$ ./bin/buildah run $CONTAINER -- apk add --no-cache git
+[buildahbox]$ ./bin/buildah commit $CONTAINER alpine-git:latest
 ```
 
 Sample podman usage:
 ```bash
-[buildahbox]$ ./podman login docker.io --username MYSUER --password MYPASS
+[buildahbox]$ ./bin/podman login docker.io --username MYSUER --password MYPASS
 ```
 
 ## Building
 As mentioned in the overview this project can build and deploy itself. To build with a local version of `buildah` you should set the environment variable `BUILDAHBOOTSTRAP` to any non-empty value. This will cause the system to use the locally installed `buildah` executable instead of pulling the `chrisruffalo/buildabox:latest` image. The bootstrap will store the image in `/var/lib/containers` using the default `buildah` configuration and locations.
 
+To build a Fedora-based container in BOOTSTRAP mode:
 ```bash
 [buildahbox]$ export BUILDAHBOOTSTRAP="1"
 [buildahbox]$ ./build.sh
 [buildahbox]$ export BUILDAHBOOTSTRAP=""
 ```
+
+To build a Debian-based container without BOOTSTRAP mode:
+```bash
+[buildahbox]$ SRC_CONTAINER="debian" SRC_TAG="stretch-slim" PREFIX="debian-" ./build.sh
+```
+If you do not want the debian build to be tagged with "debian-" then you can ommit the "PREFIX" environment variable to have the build labled without it.

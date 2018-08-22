@@ -26,7 +26,7 @@ if [[ $@ == "run"* ]]; then
 	USE_T="t"
 fi
 
-DOCKER_OPTIONS="run -i${USE_T} --privileged -v $DIR:/working -v $RUNTIME_DIR:$RUNTIME_TARGET -v $PODMAN_DIR:$PODMAN_TARGET -v $CONTAINERS_DIR:$TARGET_DIR $IMAGE_TAG $@"
+DOCKER_OPTIONS="run --rm -i${USE_T} --privileged -v $DIR:/working -v $RUNTIME_DIR:$RUNTIME_TARGET -v $PODMAN_DIR:$PODMAN_TARGET -v $CONTAINERS_DIR:$TARGET_DIR $IMAGE_TAG $@"
 
 # special command handling for mount option
 if [[ $@ == "mount"* ]]; then

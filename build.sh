@@ -3,41 +3,39 @@
 # targets
 TARGET_ORG=${TARGET_ORG:-"chrisruffalo"}
 TARGET_REPO=${TARGET_REPO:-"buildahbox"}
+
 # version related variables
 VERSION=$(cat ./.version)
 VERSION=${VERSION:-"SNAPSHOT"}
 GITHASH=$(git rev-parse HEAD | head -c6)
+
+# container
+SRC_CONTAINER=${SRC_CONTAINER:-"fedora"}
+SRC_TAG=${SRC_TAG:-"28"}
+
 # version
-MAJOR_TAG="${VERSION}"
-BUILD_TAG="${VERSION}-git${GITHASH}"
-MAJOR_VER="${VERSION%%.*}"
-MINOR_VER="${VERSION#*.}"
-MINOR_VER="${MINOR_VER%%.*}"
+PREFIX=${PREFIX:-""}
+BUILD_TAG="${PREFIX}${VERSION}-git${GITHASH}"
+
+# print status
+printf "Building ${BUILD_TAG} based on ${SRC_CONTAINER}:${SRC_TAG}\n"
 
 # use fedora or other modern centos with packages for buildah, podman, etc
-CONTAINER=$(./bin/buildah from fedora:28)
+WORKING_CONTAINER=$(./bin/buildah from ${SRC_CONTAINER}:${SRC_TAG})
 
 # run install in container
-./bin/buildah run $CONTAINER -- dnf upgrade-minimal -y --setopt=tsflags=nodocs
-./bin/buildah run $CONTAINER -- dnf install -y --setopt=tsflags=nodocs buildah podman runc skopeo
-
-# clean out dnf/yum/rpm artifacts and reduce size of rpmdb to match
-./bin/buildah run $CONTAINER -- dnf clean all
-./bin/buildah run $CONTAINER -- rm -rf /var/cache/yum/* 
-./bin/buildah run $CONTAINER -- rm -rf /var/lib/yum
-
-# remove logs from rpm/build process
-./bin/buildah run $CONTAINER -- rm -rf /var/log/{dnf*,anaconda/*}
+./bin/buildah copy $WORKING_CONTAINER ./container/${SRC_CONTAINER}-build.sh /build.sh
+./bin/buildah run $WORKING_CONTAINER -- /bin/bash /build.sh
+./bin/buildah run $WORKING_CONTAINER -- rm -f /build.sh
 
 # set up target directory and entrypoint
-./bin/buildah run $CONTAINER -- mkdir /working
+./bin/buildah run $WORKING_CONTAINER -- mkdir /working
 
 # set working directory (/working) and volume hint. the entrypoint is the magic user changer. the default user is chosen for compatibility.
-./bin/buildah config --workingdir /working --volume /var/lib/containers --entrypoint '["/usr/bin/buildah"]' $CONTAINER
+./bin/buildah config --workingdir /working --volume /var/lib/containers --entrypoint '["/usr/bin/buildah"]' $WORKING_CONTAINER
 
 # commit image
-./bin/buildah commit $CONTAINER ${TARGET_ORG}/${TARGET_REPO}:${BUILD_TAG}
-./bin/buildah tag ${TARGET_ORG}/${TARGET_REPO}:${BUILD_TAG} ${TARGET_ORG}/${TARGET_REPO}:latest
+./bin/buildah commit $WORKING_CONTAINER ${TARGET_ORG}/${TARGET_REPO}:${BUILD_TAG}
 
-# remove build container
-./bin/buildah rm $CONTAINER
+# remove build WORKING_CONTAINER
+./bin/buildah rm $WORKING_CONTAINER

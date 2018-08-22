@@ -15,4 +15,4 @@ CONTAINERS_DIR="${HOME}/.buildahbox/containers"
 [[ -d $CONTAINERS_DIR ]] || mkdir -p $CONTAINERS_DIR
 
 # execute command, podman needs a tty for user input
-docker run -ti --privileged --entrypoint "${PODMAN_BIN}" -v $DIR:/working -v $RUNTIME_DIR:$RUNTIME_TARGET -v $PODMAN_DIR:$PODMAN_TARGET -v $CONTAINERS_DIR:$TARGET_DIR $IMAGE_TAG $@
+docker run --rm -ti --privileged --entrypoint "${PODMAN_BIN}" -v $DIR:/working -v $RUNTIME_DIR:$RUNTIME_TARGET -v $PODMAN_DIR:$PODMAN_TARGET -v $CONTAINERS_DIR:$TARGET_DIR $IMAGE_TAG $@

@@ -9,6 +9,7 @@ notifications:
 
 script:
 - ./build.sh
+- SRC_CONTAINER="debian" SRC_TAG="stretch-slim" PREFIX="debian-" ./build.sh
 
 deploy:
   on:
@@ -16,3 +17,4 @@ deploy:
   provider: script
   script:
   - ./deploy.sh
+  - PREFIX="debian-" ./deploy.sh
