@@ -15,6 +15,4 @@ deploy:
   on:
     branch: release
   provider: script
-  script:
-  - ./deploy.sh
-  - PREFIX="debian-" ./deploy.sh
+  script: ./travis-deploy.sh
