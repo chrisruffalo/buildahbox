@@ -45,6 +45,7 @@ install -D -m 755 bin/conmon /usr/libexec/podman/conmon
 mkdir -p /etc/containers
 curl https://raw.githubusercontent.com/projectatomic/registries/master/registries.fedora -o /etc/containers/registries.conf
 curl https://raw.githubusercontent.com/containers/skopeo/master/default-policy.json -o /etc/containers/policy.json
+curl https://raw.githubusercontent.com/containers/skopeo/master/contrib/storage.conf -o /etc/containers/storage.conf
 
 # CNI plugins (https://github.com/containers/libpod/blob/master/docs/tutorials/podman_tutorial.md#installing-runc)
 git clone https://github.com/containernetworking/plugins.git $GOPATH/src/github.com/containernetworking/plugins
