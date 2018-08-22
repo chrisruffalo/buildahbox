@@ -35,7 +35,7 @@ Sample podman usage:
 
 Sample skopeo usage:
 ```bash
-[buildahbox]$ ./bin/skopeo copy alpine-git:latest docker://docker.io/organization/alpine-git:latest
+[buildahbox]$ ./bin/skopeo copy containers-storage:alpine-git:latest docker://docker.io/organization/alpine-git:latest
 ```
 
 ## Building

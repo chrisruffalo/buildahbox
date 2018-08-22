@@ -39,3 +39,6 @@ WORKING_CONTAINER=$(./bin/buildah from ${SRC_CONTAINER}:${SRC_TAG})
 
 # remove build WORKING_CONTAINER
 ./bin/buildah rm $WORKING_CONTAINER
+
+# status
+printf "Commited image ${BUILD_TAG}\n"
