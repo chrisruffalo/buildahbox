@@ -5,8 +5,7 @@ TARGET_ORG=${TARGET_ORG:-"chrisruffalo"}
 TARGET_REPO=${TARGET_REPO:-"buildahbox"}
 
 # version related variables
-VERSION=$(cat ./.version)
-VERSION=${VERSION:-"SNAPSHOT"}
+VERSION=${VERSION:-$(git rev-parse --abbrev-ref HEAD)}
 GITHASH=$(git rev-parse HEAD | head -c6)
 
 # container

@@ -8,11 +8,13 @@ notifications:
   email: false
 
 script:
+- export VERSION=${TRAVIS_PULL_REQUEST_BRANCH:-$TRAVIS_BRANCH}
 - ./build.sh
 - SRC_CONTAINER="debian" SRC_TAG="stretch-slim" PREFIX="debian-" ./build.sh
 
 deploy:
   on:
-    branch: release
+    all_branches: true
+    condition: ${TRAVIS_PULL_REQUEST_BRANCH:-$TRAVIS_BRANCH} =~ ^[0-9]+\.[0-9]?\.[0-9]?\.[0-9]?$
   provider: script
   script: ./travis-deploy.sh

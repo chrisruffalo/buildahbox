@@ -11,8 +11,7 @@ INPUT=$1
 PUSH=${INPUT:-"0"} # default to 0/false
 
 # get version from version file
-VERSION=$(cat ./.version)
-VERSION=${VERSION:-"SNAPSHOT"}
+VERSION=${VERSION:-$(git rev-parse --abbrev-ref HEAD)}
 GITHASH=$(git rev-parse HEAD | head -c6)
 
 # export output
