@@ -10,7 +10,6 @@ notifications:
 script:
 - export VERSION=${TRAVIS_PULL_REQUEST_BRANCH:-$TRAVIS_BRANCH}
 - ./build.sh
-- SRC_CONTAINER="debian" SRC_TAG="stretch-slim" PREFIX="debian-" ./build.sh
 
 deploy:
   on:

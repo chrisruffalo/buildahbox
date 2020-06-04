@@ -47,9 +47,3 @@ To build a Fedora-based container in BOOTSTRAP mode:
 [buildahbox]$ ./build.sh
 [buildahbox]$ export BUILDAHBOOTSTRAP=""
 ```
-
-To build a Debian-based container without BOOTSTRAP mode:
-```bash
-[buildahbox]$ SRC_CONTAINER="debian" SRC_TAG="stretch-slim" PREFIX="debian-" ./build.sh
-```
-If you do not want the debian build to be tagged with "debian-" then you can ommit the "PREFIX" environment variable to have the build labled without it.
