@@ -10,7 +10,7 @@ GITHASH=$(git rev-parse HEAD | head -c6)
 
 # container
 SRC_CONTAINER=${SRC_CONTAINER:-"fedora"}
-SRC_TAG=${SRC_TAG:-"28"}
+SRC_TAG=${SRC_TAG:-"32"}
 
 # version
 PREFIX=${PREFIX:-""}
